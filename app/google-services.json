@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "955912470584",
+    "project_id": "streetshelter-9f20b",
+    "storage_bucket": "streetshelter-9f20b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:955912470584:android:36854eace7a530eee226cd",
+        "android_client_info": {
+          "package_name": "com.example.streetshelter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDBCuvZGBfowSa1bWOoJ8YJk_xpUpwygIk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
