@@ -48,7 +48,6 @@ fun AppNavigation(authManager: AuthManager, reportManager: ReportManager) {
                 onRegisterClick = { navController.navigate("role_selection") },
                 onForgotPasswordClick = { navController.navigate("forgot_password") },
                 onLoginSuccess = {
-                    // Determine user role and navigate to appropriate dashboard
                     authManager.getUserRole { role, error ->
                         if (role != null) {
                             when (role) {
@@ -60,7 +59,6 @@ fun AppNavigation(authManager: AuthManager, reportManager: ReportManager) {
                                 }
                             }
                         } else {
-                            // Fallback to generic dashboard if role not found
                             navController.navigate("dashboard") { popUpTo("login") { inclusive = true } }
                         }
                     }

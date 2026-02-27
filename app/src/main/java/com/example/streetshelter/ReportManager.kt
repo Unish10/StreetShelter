@@ -33,7 +33,6 @@ class ReportManager {
             status = "PENDING"
         )
 
-        // Save report to Realtime Database
         reportsRef.child(reportId).setValue(report)
             .addOnSuccessListener {
                 Log.d("ReportManager", "Report saved successfully")

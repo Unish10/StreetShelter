@@ -31,7 +31,6 @@ class AuthManager {
                             email = email,
                             role = role.name
                         )
-                        // Store user role in Realtime Database
                         database.reference.child("users").child(userId).setValue(user)
                             .addOnSuccessListener {
                                 onComplete(true, null)

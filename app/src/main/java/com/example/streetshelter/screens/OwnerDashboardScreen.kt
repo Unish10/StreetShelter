@@ -40,7 +40,6 @@ fun OwnerDashboardScreen(
     val context = LocalContext.current
     val userEmail = authManager.getCurrentUserEmail() ?: "Unknown"
 
-    // Load all reports
     LaunchedEffect(Unit) {
         reportManager.getAllReports { reports, error ->
             isLoading = false
@@ -53,7 +52,6 @@ fun OwnerDashboardScreen(
         }
     }
 
-    // Apply filter
     LaunchedEffect(selectedFilter, allReports) {
         filteredReports = when (selectedFilter) {
             "PENDING" -> allReports.filter { it.status == "PENDING" }
@@ -105,17 +103,14 @@ fun OwnerDashboardScreen(
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Welcome Header
             item {
                 OwnerWelcomeHeader(userEmail)
             }
 
-            // Statistics Cards
             item {
                 OwnerStatisticsRow(allReports)
             }
 
-            // Filter Section
             item {
                 Column {
                     Text(
@@ -133,7 +128,6 @@ fun OwnerDashboardScreen(
                 }
             }
 
-            // Section Title
             item {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -160,7 +154,6 @@ fun OwnerDashboardScreen(
                 }
             }
 
-            // Loading State
             if (isLoading) {
                 item {
                     Box(
@@ -173,13 +166,11 @@ fun OwnerDashboardScreen(
                     }
                 }
             }
-            // Empty State
             else if (filteredReports.isEmpty()) {
                 item {
                     OwnerEmptyStateCard(selectedFilter)
                 }
             }
-            // Reports List
             else {
                 items(filteredReports) { report ->
                     EnhancedOwnerReportCard(
@@ -498,7 +489,6 @@ fun EnhancedOwnerReportCard(
         Column(
             modifier = Modifier.padding(20.dp)
         ) {
-            // Header with location and status
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -528,7 +518,6 @@ fun EnhancedOwnerReportCard(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Reporter info
             Surface(
                 color = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.3f),
                 shape = RoundedCornerShape(10.dp)
@@ -554,7 +543,6 @@ fun EnhancedOwnerReportCard(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Dog Type with icon
             Surface(
                 color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
                 shape = RoundedCornerShape(12.dp)
@@ -572,7 +560,6 @@ fun EnhancedOwnerReportCard(
                 }
             }
 
-            // Description if available
             if (report.description.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(12.dp))
                 Row(
@@ -595,7 +582,6 @@ fun EnhancedOwnerReportCard(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Footer with date
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
             Spacer(modifier = Modifier.height(12.dp))
 
@@ -619,7 +605,6 @@ fun EnhancedOwnerReportCard(
                     )
                 }
 
-                // Rescue button for pending reports
                 if (report.status == "PENDING") {
                     FilledTonalButton(
                         onClick = { showRescueDialog = true },

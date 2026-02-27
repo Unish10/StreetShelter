@@ -38,7 +38,6 @@ fun ReporterDashboardScreen(
     val context = LocalContext.current
     val userEmail = authManager.getCurrentUserEmail() ?: "Unknown"
 
-    // Load user's reports
     LaunchedEffect(Unit) {
         val userId = authManager.getCurrentUserId()
         if (userId != null) {
@@ -103,17 +102,14 @@ fun ReporterDashboardScreen(
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Welcome Header
             item {
                 WelcomeHeader(userEmail)
             }
 
-            // Statistics Cards
             item {
                 ReporterStatisticsRow(myReports)
             }
 
-            // Section Title
             item {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -140,7 +136,6 @@ fun ReporterDashboardScreen(
                 }
             }
 
-            // Loading State
             if (isLoading) {
                 item {
                     Box(
@@ -153,13 +148,11 @@ fun ReporterDashboardScreen(
                     }
                 }
             }
-            // Empty State
             else if (myReports.isEmpty()) {
                 item {
                     EmptyStateCard()
                 }
             }
-            // Reports List
             else {
                 items(myReports) { report ->
                     EnhancedReportCard(report)
@@ -175,7 +168,6 @@ fun ReporterDashboardScreen(
             onDismiss = { showReportDialog = false },
             onSuccess = {
                 showReportDialog = false
-                // Reload reports
                 val userId = authManager.getCurrentUserId()
                 if (userId != null) {
                     reportManager.getMyReports(userId) { reports, _ ->
@@ -373,7 +365,6 @@ fun EnhancedReportCard(report: DogReport) {
         Column(
             modifier = Modifier.padding(20.dp)
         ) {
-            // Header with location and status
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -403,7 +394,6 @@ fun EnhancedReportCard(report: DogReport) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Dog Type with icon
             Surface(
                 color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
                 shape = RoundedCornerShape(12.dp)
@@ -421,7 +411,6 @@ fun EnhancedReportCard(report: DogReport) {
                 }
             }
 
-            // Description if available
             if (report.description.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(12.dp))
                 Row(
@@ -444,7 +433,6 @@ fun EnhancedReportCard(report: DogReport) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Footer with date
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
             Spacer(modifier = Modifier.height(12.dp))
 
