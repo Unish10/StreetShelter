@@ -28,11 +28,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.streetshelter.AuthManager
 import com.example.streetshelter.R
+import com.example.streetshelter.models.UserRole
 import com.example.streetshelter.ui.theme.StreetShelterTheme
 
 @Composable
 fun RegisterScreen(
     authManager: AuthManager,
+    selectedRole: UserRole,
     onLoginClick: () -> Unit,
     onRegisterSuccess: () -> Unit
 ) {
@@ -62,6 +64,11 @@ fun RegisterScreen(
                     text = "Create an Account",
                     style = MaterialTheme.typography.headlineSmall
                 )
+                Text(
+                    text = "Registering as: ${if (selectedRole == UserRole.REPORTER) "Reporter" else "Rescue Owner"}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.primary
+                )
                 Spacer(modifier = Modifier.height(24.dp))
                 OutlinedTextField(
                     value = email,
@@ -89,7 +96,7 @@ fun RegisterScreen(
                 Button(
                     onClick = {
                         if (password == confirmPassword) {
-                            authManager.register(email, password) { success, errorMessage ->
+                            authManager.register(email, password, selectedRole) { success, errorMessage ->
                                 if (success) {
                                     onRegisterSuccess()
                                 } else {
@@ -117,6 +124,6 @@ fun RegisterScreen(
 @Composable
 fun RegisterScreenPreview() {
     StreetShelterTheme {
-        RegisterScreen(AuthManager(), onLoginClick = {}, onRegisterSuccess = {})
+        RegisterScreen(AuthManager(), UserRole.REPORTER, onLoginClick = {}, onRegisterSuccess = {})
     }
 }
