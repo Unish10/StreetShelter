@@ -5,9 +5,13 @@ data class DogReport(
     val reporterId: String = "",
     val reporterEmail: String = "",
     val location: String = "",
-    val dogType: String = "", // Small Dog 🐕, Medium Dog 🐶, Big Dog 🐩, Injured/Sick, Stray
+    val latitude: Double = 0.0,
+    val longitude: Double = 0.0,
+    val dogType: String = "",
+    val category: String = "STRAY",
+    val priority: String = "MEDIUM",
     val description: String = "",
     val timestamp: Long = System.currentTimeMillis(),
-    val status: String = "PENDING" // PENDING, RESCUED, CANCELLED
+    val status: String = "PENDING"
 )
 

@@ -3,7 +3,7 @@
 *.aab
 *.dex
 *.class
-
+*.md
 bin/
 gen/
 out/

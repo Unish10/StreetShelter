@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -85,7 +86,7 @@ fun OwnerDashboardScreen(
                     IconButton(onClick = {
                         authManager.logout()
                         onLogout()
-                    }) {
+                    }, modifier = Modifier.testTag("logout_button")) {
                         Icon(Icons.Default.Close, contentDescription = "Logout")
                     }
                 },
@@ -194,7 +195,7 @@ fun OwnerDashboardScreen(
 @Composable
 fun OwnerWelcomeHeader(userEmail: String) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().testTag("welcome_header"),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.secondaryContainer
         ),
@@ -255,32 +256,49 @@ fun OwnerStatisticsRow(reports: List<DogReport>) {
     val totalCount = reports.size
     val pendingCount = reports.count { it.status == "PENDING" }
     val rescuedCount = reports.count { it.status == "RESCUED" }
+    val urgentCount = reports.count { it.priority == "HIGH" && it.status == "PENDING" }
 
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    Column(
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        OwnerStatCard(
-            modifier = Modifier.weight(1f),
-            icon = Icons.Default.Menu,
-            title = "Total",
-            count = totalCount,
-            color = MaterialTheme.colorScheme.primaryContainer
-        )
-        OwnerStatCard(
-            modifier = Modifier.weight(1f),
-            icon = Icons.Default.Build,
-            title = "Pending",
-            count = pendingCount,
-            color = MaterialTheme.colorScheme.tertiaryContainer
-        )
-        OwnerStatCard(
-            modifier = Modifier.weight(1f),
-            icon = Icons.Default.CheckCircle,
-            title = "Rescued",
-            count = rescuedCount,
-            color = MaterialTheme.colorScheme.secondaryContainer
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            OwnerStatCard(
+                modifier = Modifier.weight(1f),
+                icon = Icons.Default.Menu,
+                title = "Total",
+                count = totalCount,
+                color = MaterialTheme.colorScheme.primaryContainer
+            )
+            OwnerStatCard(
+                modifier = Modifier.weight(1f),
+                icon = Icons.Default.Build,
+                title = "Pending",
+                count = pendingCount,
+                color = MaterialTheme.colorScheme.tertiaryContainer
+            )
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            OwnerStatCard(
+                modifier = Modifier.weight(1f),
+                icon = Icons.Default.CheckCircle,
+                title = "Rescued",
+                count = rescuedCount,
+                color = MaterialTheme.colorScheme.secondaryContainer
+            )
+            OwnerStatCard(
+                modifier = Modifier.weight(1f),
+                icon = Icons.Default.Warning,
+                title = "Urgent",
+                count = urgentCount,
+                color = MaterialTheme.colorScheme.errorContainer
+            )
+        }
     }
 }
 
@@ -479,41 +497,64 @@ fun EnhancedOwnerReportCard(
     val formattedDate = dateFormat.format(Date(report.timestamp))
 
     Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
+        modifier = Modifier.fillMaxWidth().testTag("report_card_${report.id}"),
+        shape = RoundedCornerShape(20.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         )
     ) {
         Column(
-            modifier = Modifier.padding(20.dp)
+            modifier = Modifier.padding(24.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.LocationOn,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.secondary,
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = report.location,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        maxLines = 1
-                    )
-                }
-                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "ID: ${report.id.take(8)}",
+                    style = MaterialTheme.typography.labelSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier
+                        .background(
+                            MaterialTheme.colorScheme.primaryContainer,
+                            RoundedCornerShape(8.dp)
+                        )
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                )
                 OwnerEnhancedStatusChip(status = report.status)
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Default.LocationOn,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier.size(20.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = report.location,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                CategoryBadge(category = report.category)
+                PriorityBadge(priority = report.priority)
             }
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -542,6 +583,7 @@ fun EnhancedOwnerReportCard(
             }
 
             Spacer(modifier = Modifier.height(12.dp))
+
 
             Surface(
                 color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
@@ -610,7 +652,8 @@ fun EnhancedOwnerReportCard(
                         onClick = { showRescueDialog = true },
                         colors = ButtonDefaults.filledTonalButtonColors(
                             containerColor = MaterialTheme.colorScheme.primary
-                        )
+                        ),
+                        modifier = Modifier.testTag("rescue_button_${report.id}")
                     ) {
                         Icon(
                             imageVector = Icons.Default.CheckCircle,
@@ -649,7 +692,8 @@ fun EnhancedOwnerReportCard(
                                 Toast.makeText(context, "Error: $error", Toast.LENGTH_SHORT).show()
                             }
                         }
-                    }
+                    },
+                    modifier = Modifier.testTag("confirm_rescue_dialog_button")
                 ) {
                     Text("Confirm")
                 }
@@ -665,35 +709,115 @@ fun EnhancedOwnerReportCard(
 
 @Composable
 fun OwnerEnhancedStatusChip(status: String) {
-    val (color, icon) = when (status) {
-        "PENDING" -> MaterialTheme.colorScheme.tertiaryContainer to Icons.Default.Build
-        "RESCUED" -> MaterialTheme.colorScheme.secondaryContainer to Icons.Default.CheckCircle
-        else -> MaterialTheme.colorScheme.errorContainer to Icons.Default.Warning
+    val (color, icon, textColor) = when (status) {
+        "PENDING" -> Triple(
+            MaterialTheme.colorScheme.tertiaryContainer,
+            Icons.Default.Build,
+            MaterialTheme.colorScheme.onTertiaryContainer
+        )
+        "RESCUED" -> Triple(
+            MaterialTheme.colorScheme.primaryContainer,
+            Icons.Default.CheckCircle,
+            MaterialTheme.colorScheme.onPrimaryContainer
+        )
+        else -> Triple(
+            MaterialTheme.colorScheme.errorContainer,
+            Icons.Default.Warning,
+            MaterialTheme.colorScheme.onErrorContainer
+        )
     }
 
     Surface(
         color = color,
-        shape = RoundedCornerShape(20.dp)
+        shape = RoundedCornerShape(24.dp),
+        shadowElevation = 2.dp
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                modifier = Modifier.size(16.dp),
-                tint = MaterialTheme.colorScheme.onSecondaryContainer
+                modifier = Modifier.size(18.dp),
+                tint = textColor
             )
-            Spacer(modifier = Modifier.width(4.dp))
+            Spacer(modifier = Modifier.width(6.dp))
             Text(
                 text = status,
-                style = MaterialTheme.typography.labelMedium,
+                style = MaterialTheme.typography.labelLarge,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                color = textColor
             )
         }
     }
 }
 
+@Composable
+private fun CategoryBadge(category: String) {
+    val (emoji, color, textColor) = when (category) {
+        "STRAY" -> Triple("🐕", MaterialTheme.colorScheme.tertiaryContainer, MaterialTheme.colorScheme.onTertiaryContainer)
+        "LOST" -> Triple("🔍", MaterialTheme.colorScheme.primaryContainer, MaterialTheme.colorScheme.onPrimaryContainer)
+        "INJURED" -> Triple("🏥", MaterialTheme.colorScheme.errorContainer, MaterialTheme.colorScheme.onErrorContainer)
+        else -> Triple("🐶", MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+
+    Surface(
+        color = color,
+        shape = RoundedCornerShape(12.dp),
+        shadowElevation = 1.dp
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = emoji,
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(
+                text = category,
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.Bold,
+                color = textColor
+            )
+        }
+    }
+}
+
+@Composable
+private fun PriorityBadge(priority: String) {
+    val (icon, color, textColor) = when (priority) {
+        "HIGH" -> Triple(Icons.Default.Warning, MaterialTheme.colorScheme.errorContainer, MaterialTheme.colorScheme.onErrorContainer)
+        "MEDIUM" -> Triple(Icons.Default.Info, MaterialTheme.colorScheme.secondaryContainer, MaterialTheme.colorScheme.onSecondaryContainer)
+        "LOW" -> Triple(Icons.Default.CheckCircle, MaterialTheme.colorScheme.tertiaryContainer, MaterialTheme.colorScheme.onTertiaryContainer)
+        else -> Triple(Icons.Default.Info, MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+
+    Surface(
+        color = color,
+        shape = RoundedCornerShape(12.dp),
+        shadowElevation = 1.dp
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                modifier = Modifier.size(14.dp),
+                tint = textColor
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(
+                text = priority,
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.Bold,
+                color = textColor
+            )
+        }
+    }
+}
 

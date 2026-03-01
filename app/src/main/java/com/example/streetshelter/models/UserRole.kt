@@ -4,4 +4,3 @@ enum class UserRole {
     REPORTER,
     OWNER
 }
-

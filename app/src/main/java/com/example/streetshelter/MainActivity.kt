@@ -9,7 +9,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.streetshelter.models.UserRole
-import com.example.streetshelter.screens.DashboardScreen
 import com.example.streetshelter.screens.ForgotPasswordScreen
 import com.example.streetshelter.screens.LoginScreen
 import com.example.streetshelter.screens.OwnerDashboardScreen
@@ -49,17 +48,19 @@ fun AppNavigation(authManager: AuthManager, reportManager: ReportManager) {
                 onForgotPasswordClick = { navController.navigate("forgot_password") },
                 onLoginSuccess = {
                     authManager.getUserRole { role, error ->
-                        if (role != null) {
-                            when (role) {
-                                UserRole.REPORTER -> navController.navigate("reporter_dashboard") {
-                                    popUpTo("login") { inclusive = true }
-                                }
-                                UserRole.OWNER -> navController.navigate("owner_dashboard") {
+                        when (role) {
+                            UserRole.REPORTER -> navController.navigate("reporter_dashboard") {
+                                popUpTo("login") { inclusive = true }
+                            }
+                            UserRole.OWNER -> navController.navigate("owner_dashboard") {
+                                popUpTo("login") { inclusive = true }
+                            }
+                            null -> {
+                                // Default fallback if no role is found
+                                navController.navigate("reporter_dashboard") {
                                     popUpTo("login") { inclusive = true }
                                 }
                             }
-                        } else {
-                            navController.navigate("dashboard") { popUpTo("login") { inclusive = true } }
                         }
                     }
                 }
@@ -75,7 +76,11 @@ fun AppNavigation(authManager: AuthManager, reportManager: ReportManager) {
         }
         composable("register/{role}") { backStackEntry ->
             val roleString = backStackEntry.arguments?.getString("role") ?: "REPORTER"
-            val selectedRole = UserRole.valueOf(roleString)
+            val selectedRole = try {
+                UserRole.valueOf(roleString)
+            } catch (e: Exception) {
+                UserRole.REPORTER
+            }
             RegisterScreen(
                 authManager = authManager,
                 selectedRole = selectedRole,
@@ -88,9 +93,6 @@ fun AppNavigation(authManager: AuthManager, reportManager: ReportManager) {
                 authManager = authManager,
                 onSubmit = { navController.popBackStack() }
             )
-        }
-        composable("dashboard") {
-            DashboardScreen(onLogout = { navController.navigate("login") { popUpTo("dashboard") { inclusive = true } } })
         }
         composable("reporter_dashboard") {
             ReporterDashboardScreen(

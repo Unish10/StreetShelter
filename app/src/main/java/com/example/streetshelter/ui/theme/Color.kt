@@ -4,11 +4,6 @@ import androidx.compose.ui.graphics.Color
 
 // Main brand colors from the logo
 val LogoOrange = Color(0xFFF57F17)
-val LogoBlue = Color(0xFF003764)
-
-// Generated Material 3 color scheme
-
-// Light Theme Colors
 val md_theme_light_primary = Color(0xFF8C5000)
 val md_theme_light_onPrimary = Color(0xFFFFFFFF)
 val md_theme_light_primaryContainer = Color(0xFFFFDDBA)

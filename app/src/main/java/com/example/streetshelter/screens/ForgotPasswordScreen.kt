@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -57,7 +58,8 @@ fun ForgotPasswordScreen(authManager: AuthManager, onSubmit: () -> Unit) {
                 Text(
                     text = "Forgot Your Password?",
                     style = MaterialTheme.typography.headlineSmall,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.testTag("forgot_password_title")
                 )
                 Text(
                     text = "Enter your email to reset your password",
@@ -69,7 +71,7 @@ fun ForgotPasswordScreen(authManager: AuthManager, onSubmit: () -> Unit) {
                     value = email,
                     onValueChange = { email = it },
                     label = { Text("Email Address") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().testTag("reset_email_field")
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 Button(
@@ -82,7 +84,7 @@ fun ForgotPasswordScreen(authManager: AuthManager, onSubmit: () -> Unit) {
                             }
                         }
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().testTag("reset_submit_button")
                 ) {
                     Text("Submit")
                 }
@@ -92,11 +94,11 @@ fun ForgotPasswordScreen(authManager: AuthManager, onSubmit: () -> Unit) {
                         text = it.first,
                         color = it.second,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth().testTag("reset_message")
                     )
                 }
                 Spacer(modifier = Modifier.height(8.dp))
-                TextButton(onClick = { onSubmit() }) {
+                TextButton(onClick = { onSubmit() }, modifier = Modifier.testTag("back_to_login_button")) {
                     Text("Back to Login")
                 }
             }

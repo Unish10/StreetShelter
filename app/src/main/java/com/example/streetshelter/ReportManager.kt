@@ -13,21 +13,29 @@ class ReportManager {
         reporterId: String,
         reporterEmail: String,
         location: String,
+        latitude: Double = 0.0,
+        longitude: Double = 0.0,
         dogType: String,
+        category: String,
+        priority: String,
         description: String,
         onComplete: (Boolean, String?) -> Unit
     ) {
         val reportId = UUID.randomUUID().toString()
 
         Log.d("ReportManager", "Creating report: $reportId")
-        Log.d("ReportManager", "Location: $location, Type: $dogType")
+        Log.d("ReportManager", "Location: $location, Type: $dogType, Category: $category, Priority: $priority")
 
         val report = DogReport(
             id = reportId,
             reporterId = reporterId,
             reporterEmail = reporterEmail,
             location = location,
+            latitude = latitude,
+            longitude = longitude,
             dogType = dogType,
+            category = category,
+            priority = priority,
             description = description,
             timestamp = System.currentTimeMillis(),
             status = "PENDING"
